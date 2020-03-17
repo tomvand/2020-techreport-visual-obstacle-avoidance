@@ -1,0 +1,85 @@
+% Graphics
+\graphicspath{{./images/}{./code/}}
+
+% Geometry
+\usepackage{pdflscape}
+
+% Table
+\usepackage{booktabs}
+\usepackage{rotating} % sidewaystable
+
+% Subfigures
+\usepackage{subcaption}
+
+% References
+\usepackage{hyperref}
+
+% Citation
+\newcommand\citeay[1]{% Cite as "Author et al., 2011"
+	\citeauthor{#1},~\citeyear{#1}}
+
+% Math and numbers
+\usepackage{nth}
+\newcommand{\md}{\mathrm{d}}
+
+% Units
+\usepackage{siunitx}
+\sisetup{per-mode=symbol}
+\DeclareSIUnit{\EC}{EC} % EC credits
+\DeclareSIUnit{\GS}{GS} % GS credits
+\DeclareSIUnit{\px}{px} % pixel
+
+% Names that should be emph'd
+\newcommand{\crazyflie}{\emph{CrazyFlie}}
+\newcommand{\cyberzoo}{\emph{Cyberzoo}}
+\newcommand{\TUDelft}{TU Delft}
+\newcommand{\percevite}{PercEvite}
+\newcommand{\monodepth}{\emph{MonoDepth}}
+
+% Hyphenation
+\hyphenation{PercEvite}
+
+% Acronyms
+\usepackage{acronym}
+\acrodef{ANCE}{Aircraft Noise and Climate Effects}
+\acrodef{CAP}{Collision Avoidance Package}
+\acrodef{CAS}{Collision Avoidance System}\acrodefplural{CAS}[CAS]{Collision Avoidance Systems}
+\acrodef{CoG}{Center-of-Gravity}
+\acrodef{CNN}{Convolutional Neural Network}
+\acrodef{EGPWS}{Enhanced Ground Proximity Warning System}
+\acrodef{EKF}{Extended Kalman Filter}
+\acrodef{ELAS}{Efficient Large-Scale Stereo Matching}
+\acrodef{ENAC}{Ecole Nationale de l'Aviation Civile}\acused{ENAC}
+\acrodef{eVO}{embedded Visual Odometer}
+\acrodef{FCN}{Fully Convolutional Network}
+\acrodef{FoE}{Focus-of-Expansion}
+\acrodef{GAN}{Generative Adversarial Network}
+\acrodef{GPS}{Global Positioning System}\acused{GPS}
+\acrodef{ICCV}{International Conference on Computer Vision}
+\acrodef{IMAV}{International Micro Air Vehicles}
+\acrodef{IMU}{Inertial Measurement Unit}
+\acrodef{INDI}{Incremental Non-linear Dynamics Inversion}
+\acrodef{MAV}{Micro Aerial Vehicle}
+\acrodef{MPC}{Model Predictive Control}
+\acrodef{MRF}{Markov Random Field}
+\acrodef{P3P}{Perspective-3-Point}
+\acrodef{PID}{Proportional-Integral-Derivative}\acused{PID}
+\acrodef{RF}{Radio Frequency}\acused{RF}
+\acrodef{ROI}{Region of Interest}
+\acrodef{ROS}{Robot Operating System}\acused{ROS}
+\acrodef{RRT}{Rapidly-exploring Random Tree}
+\acrodef{SAR}{Search-and-Rescue}
+\acrodef{SESAR}{Single European Sky ATM Research}\acused{SESAR}
+\acrodef{SGM}{Semiglobal Matching}
+\acrodef{SLAM}{Simultaneous Localization and Mapping}
+\acrodef{SGM}{Semiglobal Matching}
+\acrodef{SGBM}{Semiglobal Block Matching}
+\acrodef{SSL}{Self-Supervised Learning}
+\acrodef{TCAS}{Traffic Collision Avoidance System}\acused{TCAS}
+\acrodef{UAV}{Unmanned Aerial Vehicle}
+\acrodef{VO}{Visual Odometry}
+\acrodef{VIO}{Visual-Inertial Odometry}
+\acrodef{WP}{Work Package}
+
+% To-do
+\usepackage{todonotes}

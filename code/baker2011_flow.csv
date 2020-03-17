@@ -1,0 +1,25 @@
+Algorithm,Paper,Runtime,Avg EE,code
+Adaptive,Wedel et al. 2009,9.2,4.8,
+Complementary,Zimmer et al. 2009,44,5.2,
+Aniso. Huber-L1,Werlberger et al. 2009,2,6.6,
+DPOF,Lei and Yang 2009,261,6.7,
+TV-L1-improved,Wedel et al. 2008,2.9,6.8,
+CBF,Trobin et al. 2008,69,8.1,
+Brox et al.,Brox et al. 2004,18,8.7,opencv
+Rannacher,Rannacher 2009,0.12,8.1,
+F-TV-L1,Wedel et al. 2008,8,8.3,
+Second-order prior,Trobin et al. 2008,14,9.6,
+Fusion,Lempitsky et al. 2008,2666,9.3,
+Dynamic MRF,Glocker et al. 2008,366,10.3,
+Seg OF,Xu et al. 2008,60,12.2,http://www.cse.cuhk.edu.hk/leojia/projects/flow/
+Learning Flow,Sun et al. 2008,825,12.6,
+Filter Flow,Seitz and Baker 2009,34000,14.2,
+Graph Cuts,Cooke 2008,1200,14.5,
+Black & Anandan,Black and Anandan 1996,328,15.5,http://cs.brown.edu/~dqsun/research/software.html
+SPSA-Learn,Li and Huttenlocher 2008,200,15,
+Group Flow,Ren 2008,600,16.2,
+2D-CLG,Bruhn et al. 2005,844,17.3,
+Horn & Schunk,Horn and Schunk 1981,49,18.6,1
+TI-DOFE,Cassisa et al. 2009,260,19.8,
+FOLKI,Le Besnerais and Champagnat 2005,1.4,22.2,https://github.com/aplyer/gefolki
+Pyramid LK,Lucas and Kanade 1981,11.9,23.2,opencv

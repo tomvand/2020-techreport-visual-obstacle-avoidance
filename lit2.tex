@@ -1,0 +1,146 @@
+\section{Deep Learning for depth perception}
+\label{sec:depthest}
+Because of strict weight constraints, \ac{UAV} obstacle detection is strongly dependent on vision.
+While earlier vision algorithms had to be designed and tuned by hand, the arrival of Deep Learning allows depth estimation to be learned from large datasets.
+This section presents an overview of recent literature and developments in the field of depth perception.
+Since the first application of a \acf{CNN} for depth perception in \citeyear{Eigen2014} \cite{Eigen2014} this field has been rapidly evolving.
+This is also illustrated by the articles cited in this section, as the majority of them were uploaded to ArXiv between June 2018 and now.
+Each month, roughly ten new relevant papers appear on ArXiv.
+
+Section \ref{sec:dl_problems} describes different depth perception tasks.
+Section \ref{sec:dl_training} will discuss the training of these networks including a brief overview of commonly used datasets.
+Finally, section \ref{sec:dl_analysis} presents some works on the analysis of networks after they have been trained.
+
+
+\subsection{Problems in depth perception}
+\label{sec:dl_problems}
+While the goal of depth perception is clear -- the estimation of a depth map from input images -- there are a few ways this problem is formulated in literature.
+The most common problem that is solved in literature is \emph{depth prediction}: generating a depth map using only one or more input images.
+A second problem in literature is that of \emph{depth completion}.
+In this case, a partial depth map is already available, such as the depth towards \ac{VO} or \ac{SLAM} keypoints.
+The goal of the neural network is then to fill in the missing parts of the depth map.
+Finally, recent literature has shifted towards the \emph{combination of depth perception with other tasks} in the same network.
+For instance, a single network performs both depth estimation and object segmentation.
+The next subsections look more closely at these problems.
+
+\subsubsection{Depth prediction}
+The goal of depth prediction is the estimation of a depth map given only one or more RGB images.
+The field of \emph{monocular depth prediction} uses only one image for its depth estimate.
+The first \ac{CNN} for monocular depth prediction was presented in \citeyear{Eigen2014} by \citeauthor{Eigen2014} \cite{Eigen2014}.
+This network was trained on images labeled with true depth maps.
+Because these maps are hard to obtain, \citeauthor{Garg2016} \cite{Garg2016} developed the first network that used unsupervised learning.
+Training is performed by predicting the \emph{other} image from a stereo pair; it is no longer necessary to collect true depth maps.
+\citeauthor{Godard2017} \cite{Godard2017} proposed further improvements to this technique.
+The recently published \emph{PyD-Net} (July 2018) can run at $\sim\!\SI{2}{\Hz}$ on a Raspberry Pi 3 CPU and still produce competitive results \cite{Poggi2018}.
+
+While methods \cite{Garg2016,Godard2017} do not require true depth labels, they still need to use a stereo camera to collect training data for monocular vision.
+As a result, these methods cannot be used for on-board training of monocular vision.
+An alternative to these approaches is to train on monocular image sequences.
+Examples of this approach are \cite{Vijayanarasimhan2017,Jiang2017,Zhou2017}.
+
+While it may seem redundant at first, it is also possible to perform depth prediction on stereo images.
+The advantage of this over `normal' stereo vision methods such as \ac{SGM} is that the neural network can also learn to include appearance cues.
+These provide additional depth information that is not provided by just the disparities.
+An example of deep learning for stereo vision is found in \cite{Zhong2017}, where \ac{SSL} is used to learn stereo vision from scratch.
+After training, the network can compete with existing state-of-the-art algorithms.
+
+Compared to monocular vision, stereo vision has the advantage that a reliable reference distance is available: the baseline between the two cameras.
+As a result, depth estimates from stereo vision are more accurate than those from monocular vision.
+This point is strongly argued by \citeauthor{Smolyanskiy2018}, who state that any application that relies on accurate depth estimates and that can carry more than one camera should do so \cite{Smolyanskiy2018}.
+The use of a stereo camera should be possible on all \acp{UAV} as even the $\sim\!\SI{20}{\g}$ DelFly can carry a small stereo camera.
+The only reason the preliminary work in \autoref{sec:preliminary} still looks at monocular vision is that this allows appearance cues to be examined in isolation from disparity or flow cues.
+
+
+\subsubsection{Depth completion}
+Where depth prediction uses only RGB images, \emph{depth completion} assumes that some sparse depth information is available.
+This information can come, for instance, from the depth of \ac{VO} keypoints.
+In literature, LIDAR is also commonly mentioned as a source of sparse depth measurements.
+
+\citeauthor{Ma2017} \cite{Ma2017} implement a network that uses sparse depth information and then compare its performance to monocular depth estimation.
+They come to the interesting conclusion that even a depth map generated from only 20 sparse depth measurements \emph{without RGB images} already has a higher accuracy than the monocular depth estimation networks of \cite{Eigen2015,Laina2016}.
+Note that this comparison is based on scale-aware metrics; the scale-invariant error \cite{Eigen2014} is not reported so it is not possible to say whether the relative distances are incorrect or that the monocular methods only suffer from a scaling error.
+Nevertheless, the experiments show that sparse depth measurements can be a valuable addition for depth estimation.
+The authors also check whether the use of RGB images in addition to sparse depth estimates leads to further accuracy improvements: this is primarily the case for low numbers of depth measurements, at higher numbers there is also an increase in accuracy but it is small.
+The work of \citeauthor{Ma2017} is continued in \cite{Ma2018}; other recent examples of depth completion are \cite{Weerasekera2018,Jaritz2018a,Cheng2018a}.
+No examples were found where sparse depth completion is combined with or compared to stereo vision.
+
+The good results from depth completion lead to an interesting design choice: is it better to perform depth prediction and use the results for \ac{VO}, or to use \ac{VO} to collect sparse measurements and use these to estimate a depth map?
+A third option has also appeared in recent literature: use a single network to predict both depth and pose from image sequences.
+
+\subsubsection[Combined tasks]{Combined tasks: depth, pose, flow, segmentation, ...}
+Recently a growing number of articles is appearing on networks that combine depth estimation with other tasks.
+Common combinations are depth with pose, segmentation and/or optical flow.
+There are a few potential advantages to combining these techniques in a single network: if filters can be shared between tasks, this might lead to a lower total number of parameters.
+Secondly, combining multiple tasks can potentially improve learning as the depth estimation is encouraged to use the (intermediate) results of, for instance, object segmentation and vice versa.
+A review of these networks is left for future work; it is therefore not possible to confirm these advantages in this report.
+
+
+
+
+
+\subsection{Training}
+\label{sec:dl_training}
+Training is an essential component of Deep Learning.
+For depth estimation, two types of training are common in literature: supervised and unsupervised (also called self-supervised).
+Earlier examples of monocular depth estimation (e.g. \cite{Eigen2014}) rely on \emph{supervised learning}.
+The network is trained to replicate a true depth map that belongs to the input image.
+This depth map is typically obtained using a LIDAR sensor or an RGB-D sensor (e.g. Microsoft's Kinect).
+An advantage of supervised learning is that in most cases a true depth value is available for every pixel.
+The major disadvantage, however, is that it requires an additional sensor to capture the true depth of the scene.
+For this reason, supervised learning cannot be used on-board a \ac{UAV}; all training has to be performed offline.
+
+
+In \emph{unsupervised learning}, the true depth map is not available.
+Instead, unsupervised learning often depends on a reconstruction error, where for instance the other images in a stereo pair are predicted and compared to the true images (e.g. \cite{Garg2016}).
+The advantage of unsupervised learning is that the training data is easier to collect.
+Since no additional sensor is required, learning can also be performed online, allowing the \ac{UAV} to adapt to its environment during operation.
+`Unsupervised learning' is a bit of a misnomer as the methods primarily rely on supervised training methods.
+The argument to call them unsupervised is that no labeled data has to be provided from an external source.
+Unsupervised learning is the same as \emph{\acf{SSL}}, but this term does not introduce ambiguity about the learning method, while it still makes it sufficiently clear that the supervision is already provided by the input data.
+Therefore, only `\ac{SSL}' will be used in this report.
+
+
+Recent articles have started to use \acp{GAN} for depth perception (e.g. \cite{Pilzer2018a,Chen2018}).
+In the \ac{GAN} framework, a second network (the \emph{discriminator}) is trained to distinguish the network's output from the training label.
+The depth perception network (the \emph{generator}) and discriminator are trained in alternation.
+In this framework the discriminator essentially replaces the loss function, but unlike the loss function it is trained specifically for the (last version of) the generator network and can therefore provide a more precise measure of its performance.
+
+\acp{GAN} can be used in both supervised and self-supervised settings.
+In the former (\cite{Chen2018}), it compares the generated and true depth maps; in the latter (\cite{Pilzer2018a}) it compares reconstructed and true images.
+In both papers the accuracy exceeds that of common benchmark papers.
+
+\medskip
+
+The (off-line) training of a neural network requires an appropriate dataset.
+The use of publicly available dataset also allows a quantitative comparison between methods.
+Commonly used datasets are the KITTI stereo dataset\footnote{\url{http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=stereo}} and the NYUv2 dataset\footnote{\url{https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html}} \cite{Silberman2012}.
+The KITTI dataset is aimed at automotive applications; the images are obtained from a stereo camera and LIDAR mounted on the front of a car.
+The NYUv2 dataset contains RGB-D images captured in indoor environments.
+Other frequently-used datasets are Make3D\footnote{\url{http://make3d.cs.cornell.edu/data.html}} \cite{Saxena2006,Saxena2007,Saxena2009} and the Cityscapes dataset\footnote{\url{https://www.cityscapes-dataset.com/}} \cite{Cordts2016a}.
+
+Instead of using data captured in the real world, it is also possible to generate these from a simulation.
+Examples of generated datasets are vKITTI\footnote{\url{http://www.europe.naverlabs.com/Research/Computer-Vision/Proxy-Virtual-Worlds}} \cite{Gaidon2016} and Synthia\footnote{\url{http://synthia-dataset.net/}}.
+Training data can also be generated during closed-loop simulation.
+An example of this is Microsoft's AirSim\footnote{\url{https://github.com/Microsoft/AirSim}} for \acp{UAV} and autonomous cars.
+An advantage of simulation is that the actual depth of all pixels is directly available.
+The disadvantage is that the generated images differ from those captured in the real world -- the \emph{reality gap}.
+In \cite{Zheng2018} \citeauthor{Zheng2018} propose to use a \ac{GAN} to reduce the difference between real and simulated images.
+The resulting network can outperform \cite{Eigen2014} but not \cite{Garg2016,Godard2017} when subsequently evaluated on real datasets.
+
+
+
+\subsection{Analysis of trained networks}
+\label{sec:dl_analysis}
+While there are many articles on deep learning for depth perception, no articles were found on \emph{how} the trained networks perform this task.
+There is a small number of articles that focuses on the analysis of \acp{CNN} in general.
+In \cite{Zeiler2013} \citeauthor{Zeiler2013} use unpooling and deconvolution operations to map neuron activities back to the input space.
+Given an input image, this technique produces an image that highlights the regions that cause a strong activation of a selected neuron.
+This technique focuses on single neurons, but note that \cite{Szegedy2013} argues that it is the space spanned by multiple neurons can be more informative than individual neuron activations.
+In a more recent paper \citeauthor{Olah2017} \cite{Olah2017} present a highly detailed (interactive) overview of visualization techniques.
+This article provides a good starting point for further research into neural network visualization.
+
+The cited papers examine generic \acp{CNN} at a rather low level.
+No articles were found that examine the high-level behavior of networks for depth perception.
+How exactly do these networks estimate depth?
+This information is essential in order to predict the behavior of these networks on other platforms -- \acp{UAV} in this case.
+Therefore, chapter \ref{sec:preliminary} presents the first steps towards a high-level understanding of these networks.

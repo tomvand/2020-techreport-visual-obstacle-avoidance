@@ -1,0 +1,40 @@
+\chapter{Problem statement}
+\label{sec:thesis}
+With a growing number of drones, the risk of collision with other air traffic or fixed obstacles increases.
+New safety measures are required to keep the operation of \acp{UAV} safe.
+One of these measures is the use of a \acfi{CAS}, a system that helps the drone autonomously detect and avoid obstacles.
+
+The design of a \acl{CAS} is a complex task with many smaller subproblems, as illustrated by \citeauthor{Albaker2009} \cite{Albaker2009}.
+How should the drone sense nearby obstacles?
+When is there a risk of collision?
+What should the drone do when a conflict is detected?
+All of these questions need to be answered to develop a functional \acl{CAS}.
+However, all of these subproblems -- except the sensing of obstacles -- only concern the \emph{behavior} of the vehicle.
+They can be solved independently of the target platform as long as it can perform the required maneuvers; it does not matter whether it is a \ac{UAV} or a larger vehicle.
+
+The \emph{sensing of the environment}, on the other hand, is the only subproblem that places requirements on the hardware, specifically the sensors that should be carried by the \ac{UAV}.
+It is the hardware that sets \acp{UAV} apart from other vehicles.
+Unlike autonomous cars, other ground-based vehicles or larger aircraft, \acp{UAV} have only a small payload capacity.
+It is therefore not practical to carry large or heavy sensors such as LIDAR or radar for obstacle avoidance.
+Instead, obstacle avoidance on \acp{UAV} requires clever use of lightweight sensors: cameras, microphones or antennae.
+This research will therefore focus on the \emph{sensing} of the environment.
+
+Out of the sensors mentioned above -- cameras, microphones and antennae -- cameras are the only ones that can detect nearly all ground-based obstacles and other air traffic; microphones and antennae are limited to detection of sources of noise or radio signals\footnote{They could be used to detect \emph{reflections} of sound or radio waves -- this is the working principle behind ultrasonic ranging and radar -- but since these are active measurements the power consumption is assumed to be too large for use on \acp{UAV}. Additionally, in the case of ultrasonic measurements the range might be too short.}.
+Therefore, this research will focus on the \emph{visual detection of obstacles}.
+
+\medskip
+
+The field of computer vision is well-developed; it may already be possible to find an adequate solution for visual obstacle detection using existing stereo vision methods like \ac{SGM} \cite{Hirschmuller2008}.
+These methods, however, only use a fraction of the information present in the images to estimate depth -- the \emph{disparity}.
+Other cues such as the apparent size of known objects are completely ignored.
+The use of \emph{appearance cues} for depth estimation is a relatively new development driven largely by the advent of Deep Learning, which allows these cues to be learned from large, labeled datasets.
+As long as the \ac{UAV}'s operational environment is similar to this training dataset it should be possible to use appearance cues in a \ac{CAS}.
+However, this is difficult to guarantee and may require a prohibitively large training set.
+
+\emph{Self-Supervised Learning} may provide a solution to this problem.
+After training on an initial dataset, the \ac{UAV} will continue to collect new training samples during operation.
+This allows it to `adapt' to its operational environment and to learn new depth cues that are relevant in that environment.
+Self-Supervised Learning for depth map estimation is a young field, the first practical examples started to appear around \citeyear{Garg2016} (e.g. \cite{Garg2016}).
+Most of the current literature is focused on automotive applications or on datasets captured at eye-level.
+It is still an open question whether Self-Supervised Learning techniques can be used for visual obstacle avoidance on \acp{UAV}.
+
